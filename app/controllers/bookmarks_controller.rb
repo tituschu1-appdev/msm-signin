@@ -1,6 +1,20 @@
 class BookmarksController < ApplicationController
+  before_action(:load_current_user)
+
+  def load_current_user
+    @current_user = User.where({ :id => session[:user_id]}).at(0)
+
+  end
+
+
   def index
-    matching_bookmarks = Bookmark.all
+    #matching_bookmarks = Bookmark.where({ :user_id => session.fetch(:user_id)})
+
+    #@current_user = User.where({ :id => session[:user_id]}).at(0)
+
+    #self.load_current_user
+
+    matching_bookmarks = @current_user.bookmarks
 
     @list_of_bookmarks = matching_bookmarks.order({ :created_at => :desc })
 
@@ -8,6 +22,8 @@ class BookmarksController < ApplicationController
   end
 
   def show
+
+    #self.load_current_user
     the_id = params.fetch("path_id")
 
     matching_bookmarks = Bookmark.where({ :id => the_id })
